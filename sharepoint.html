@@ -325,6 +325,35 @@ a { text-decoration: none; color: inherit; }
 .mp-pdf { margin-top: 6px; font-size: 12.5px; }
 .sim-dlg-pdf { margin-top: 12px; font-size: 13.5px; }
 
+/* =====================================================
+   휴대폰(760px 이하): 새 탭(Entra·SharePoint)이 옆으로 넘치면 화면이 축소돼 누를 곳이 화면 밖으로 밀린다 → 한 칸으로
+   ===================================================== */
+@media (max-width: 760px) {
+  body[data-sim-page="mfa"] .entra-sidebar,
+  body[data-sim-page="mfa"] .eh-search,
+  body[data-sim-page="mfa"] .eh-copilot,
+  body[data-sim-page="mfa"] .eh-icon,
+  body[data-sim-page="mfa"] .eh-account-text,
+  body[data-sim-page="mfa"] .mfa-table .col-upn { display: none; }
+  body[data-sim-page="mfa"] .entra-main { padding: 12px 14px 60px; }
+  body[data-sim-page="mfa"] .em-title-row h1 { font-size: 20px; line-height: 1.3; }
+  body[data-sim-page="mfa"] .em-commandbar, body[data-sim-page="mfa"] .em-tabs { overflow-x: auto; scrollbar-width: none; }
+  body[data-sim-page="mfa"] .mfa-actions, body[data-sim-page="mfa"] .mfa-filter-row { flex-wrap: wrap; }
+  body[data-sim-page="mfa"] .mfa-table .col-name, body[data-sim-page="mfa"] .mfa-table .col-status { min-width: 0; }
+
+  body[data-sim-page="sharepoint"] .sp-sidebar,
+  body[data-sim-page="sharepoint"] .sp-table th:nth-child(3),
+  body[data-sim-page="sharepoint"] .sp-table td:nth-child(3) { display: none; }
+  body[data-sim-page="sharepoint"] .sp-main { padding: 18px 14px 60px; }
+  body[data-sim-page="sharepoint"] .sp-main h1 { font-size: 22px; margin-bottom: 20px; }
+  body[data-sim-page="sharepoint"] .sp-panel { width: 100%; max-width: 100%; }
+  body[data-sim-page="sharepoint"] .sp-panel-body { padding: 8px 16px 24px; }
+  body[data-sim-page="sharepoint"] .sp-input { width: 100%; max-width: 240px; }
+  body[data-sim-page="sharepoint"] .sp-panel-footer { padding: 12px 16px; }
+  body[data-sim-page="sharepoint"] .sp-title { white-space: nowrap; }
+  body[data-sim-page="sharepoint"] .sp-header-right .sp-icon:not(:last-child) { display: none; }
+}
+
 </style>
 </head>
 <body data-sim-page="sharepoint">
@@ -677,6 +706,20 @@ if (location.hash === '#storage') openPanel('storage');
   window.M365Lite = {
     info: () => { const st = flow.steps[i]; return { active: !!coach() && !!st, i, n: flow.steps.length, t: st && st.t }; },
     stepOnce: () => { const st = flow.steps[i]; if (!st) return false; if (st.ack) acked = i; else if (st.auto) st.auto(); tick(); return true; },
+    // 사람처럼 누르는 검사용(tools/human.mjs): 지금 누를 곳의 화면 좌표와 가려졌는지
+    targetInfo: () => {
+      const st = flow.steps[i];
+      if (!coach() || !st) return { active: false };
+      const el = st.ack ? band.querySelector('[data-a="ack"]') : $$(st.sel).find((e) => e.getClientRects().length);
+      const base = { active: true, i, n: flow.steps.length, t: st.t };
+      if (!el) return Object.assign(base, { none: true });
+      const r = el.getBoundingClientRect();
+      const x = Math.round(r.left + Math.min(r.width / 2, 60)), y = Math.round(r.top + Math.min(r.height / 2, 18));
+      const hit = document.elementFromPoint(x, y);
+      const ok = !!hit && (el.contains(hit) || (!!hit.closest('label') && hit.closest('label').contains(el)));
+      const inp = el.matches('input,textarea') ? el : null;
+      return Object.assign(base, { x, y, kind: inp && inp.type !== 'checkbox' ? 'input' : 'click', inView: x >= 0 && y >= 0 && x < innerWidth && y < innerHeight, covered: !ok, cover: ok ? null : `${hit && hit.className} ${hit && (hit.textContent || '').trim().slice(0, 24)}` });
+    },
   };
   setInterval(tick, 220);
   tick();

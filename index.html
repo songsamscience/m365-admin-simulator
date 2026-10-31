@@ -2502,6 +2502,7 @@ button.dash-sec:hover { background: rgba(0,0,0,.04); }
   position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
   background: #242424; color: #fff; font-size: 13.5px; padding: 10px 16px; border-radius: 8px;
   box-shadow: var(--shadow-16); z-index: 2147482000; max-width: min(560px, 92vw); text-align: center;
+  pointer-events: none; /* 알림일 뿐 — 아래 단추(마법사 「다음」 등)를 누르는 것을 막지 않는다 */
 }
 
 @media (max-width: 1300px) {
@@ -2520,6 +2521,39 @@ button.dash-sec:hover { background: rgba(0,0,0,.04); }
   .sidebar .nav-label, .sidebar .chevron, .sidebar .sub-list, .sidebar .side-credit, .sidebar .ml-text, .sidebar .ml-badge { display: none; }
   .sidebar .mission-launch { justify-content: center; padding: 0; }
   .practice-pill { display: none; }
+  /* 휴대폰: 메뉴 아이콘(☰ 또는 「사용자」 등)을 누르면 메뉴가 본문 위로 펼쳐진다 — 하위 메뉴(활성 사용자 등)를 고를 수 있게 */
+  .sidebar.m-open {
+    position: fixed; left: 0; top: 48px; bottom: 0; height: auto; width: min(280px, 86vw); z-index: 300;
+    box-shadow: 0 0 8px rgba(0,0,0,.12), 0 32px 64px rgba(0,0,0,.24);
+  }
+  .layout:has(.sidebar.m-open) .main-content { margin-left: 48px; }
+  .sidebar.m-open .nav-label { display: block; }
+  .sidebar.m-open .chevron { display: flex; }
+  .sidebar.m-open .sub-list, .sidebar.m-open .side-credit { display: block; }
+  .sidebar.m-open .ml-text { display: inline; }
+  .sidebar.m-open .ml-badge { display: inline-flex; }
+  .sidebar.m-open .mission-launch { justify-content: flex-start; padding: 0 12px; }
+  /* 머리 막대: 제목과 아이콘이 겹치지 않게 */
+  .header-copilot, .header-sep, .header-right .icon-btn { display: none; }
+  .header-title { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* 마법사·오른쪽 창: 최소 너비 760px 때문에 화면 밖으로 넘쳐(화면이 축소돼) 누를 곳이 밀린다 → 한 칸으로 */
+  .wizard-panel { width: 100%; min-width: 0; }
+  .wizard-header { padding: 14px 16px 8px; }
+  .wizard-header h1 { font-size: 20px; }
+  .wizard-stepper, .team-stepper { display: none; }
+  .wizard-content { padding: 16px 16px 24px; }
+  .wizard-title { font-size: 20px; margin-bottom: 14px; }
+  .form-row { flex-wrap: wrap; gap: 14px; }
+  .two-col { margin-bottom: 20px; }
+  .two-col .form-field, #udContact .two-col .form-field, .domain-field { flex: 1 1 100%; }
+  .username-row { flex-wrap: wrap; }
+  .username-row .grow { flex: 1 1 0; min-width: 0; }
+  .wizard-footer { padding: 12px 16px; flex-wrap: wrap; }
+  .team-wizard { flex-direction: column; min-height: 0; }
+  .team-content { padding: 16px 0; max-width: 100%; }
+  .team-desc { margin-bottom: 20px; }
+  .team-footer { padding: 12px 0; flex-wrap: wrap; }
+  .delete-panel, .reset-panel, .ud-panel { width: 100%; max-width: 100%; }
 }
 
 /* 1366px 화면에서 마법사 두 칸 입력이 창 밖으로 넘치지 않게(원본은 320px 고정) */
@@ -2673,6 +2707,35 @@ button.dash-sec:hover { background: rgba(0,0,0,.04); }
 .pdf-link::before { content: ""; width: 14px; height: 16px; flex-shrink: 0; background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M1.5 1h7l4 4v10h-11z' fill='%23fff' stroke='%23c4314b' stroke-width='1.2'/%3E%3Cpath d='M3.5 11h7' stroke='%23c4314b' stroke-width='1.2'/%3E%3Ctext x='7' y='9.3' font-size='4.2' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23c4314b'%3EPDF%3C/text%3E%3C/svg%3E"); }
 .mp-pdf { margin-top: 6px; font-size: 12.5px; }
 .sim-dlg-pdf { margin-top: 12px; font-size: 13.5px; }
+
+/* =====================================================
+   휴대폰(760px 이하): 새 탭(Entra·SharePoint)이 옆으로 넘치면 화면이 축소돼 누를 곳이 화면 밖으로 밀린다 → 한 칸으로
+   ===================================================== */
+@media (max-width: 760px) {
+  body[data-sim-page="mfa"] .entra-sidebar,
+  body[data-sim-page="mfa"] .eh-search,
+  body[data-sim-page="mfa"] .eh-copilot,
+  body[data-sim-page="mfa"] .eh-icon,
+  body[data-sim-page="mfa"] .eh-account-text,
+  body[data-sim-page="mfa"] .mfa-table .col-upn { display: none; }
+  body[data-sim-page="mfa"] .entra-main { padding: 12px 14px 60px; }
+  body[data-sim-page="mfa"] .em-title-row h1 { font-size: 20px; line-height: 1.3; }
+  body[data-sim-page="mfa"] .em-commandbar, body[data-sim-page="mfa"] .em-tabs { overflow-x: auto; scrollbar-width: none; }
+  body[data-sim-page="mfa"] .mfa-actions, body[data-sim-page="mfa"] .mfa-filter-row { flex-wrap: wrap; }
+  body[data-sim-page="mfa"] .mfa-table .col-name, body[data-sim-page="mfa"] .mfa-table .col-status { min-width: 0; }
+
+  body[data-sim-page="sharepoint"] .sp-sidebar,
+  body[data-sim-page="sharepoint"] .sp-table th:nth-child(3),
+  body[data-sim-page="sharepoint"] .sp-table td:nth-child(3) { display: none; }
+  body[data-sim-page="sharepoint"] .sp-main { padding: 18px 14px 60px; }
+  body[data-sim-page="sharepoint"] .sp-main h1 { font-size: 22px; margin-bottom: 20px; }
+  body[data-sim-page="sharepoint"] .sp-panel { width: 100%; max-width: 100%; }
+  body[data-sim-page="sharepoint"] .sp-panel-body { padding: 8px 16px 24px; }
+  body[data-sim-page="sharepoint"] .sp-input { width: 100%; max-width: 240px; }
+  body[data-sim-page="sharepoint"] .sp-panel-footer { padding: 12px 16px; }
+  body[data-sim-page="sharepoint"] .sp-title { white-space: nowrap; }
+  body[data-sim-page="sharepoint"] .sp-header-right .sp-icon:not(:last-child) { display: none; }
+}
 
 </style>
 </head>
@@ -8110,6 +8173,24 @@ function simToast(msg, ms = 2600) {
   simToastTimer = setTimeout(() => (el.hidden = true), ms);
 }
 
+// ----- 휴대폰 메뉴: 좁은 화면(760px 이하)에서는 메뉴가 아이콘만 남아 하위 메뉴를 고를 수 없다 → 누르면 펼친다 -----
+(() => {
+  const side = document.getElementById('sidebar');
+  const narrow = () => matchMedia('(max-width: 760px)').matches;
+  document.addEventListener('click', (e) => {
+    if (!narrow()) { side.classList.remove('m-open'); return; }
+    const ham = e.target.closest('#hamburgerBtn');
+    const tog = e.target.closest('.sidebar .nav-toggle');
+    if (ham || (tog && !side.classList.contains('m-open'))) {
+      e.stopPropagation();   // 원래 동작(축소·접기) 대신 펼치기
+      side.classList.toggle('m-open', ham ? !side.classList.contains('m-open') : true);
+      if (tog) tog.closest('.nav-item').classList.add('expanded');
+      return;
+    }
+    if (side.classList.contains('m-open') && (!e.target.closest('.sidebar') || e.target.closest('.sidebar [data-page], #missionLaunch'))) side.classList.remove('m-open');
+  }, true);
+})();
+
 // ----- 새 대시보드 ↔ 기존 대시보드 -----
 const dashSwitch = document.getElementById('dashboardSwitch');
 const mainEl = document.querySelector('.main-content');
@@ -8724,6 +8805,8 @@ applyDashboardMode();
 
   // ---------- 완료 ----------
   function complete(m) {
+    // 쓰던 창(세부 정보 등)이 남아 있으면 왼쪽 아래 「실습 미션」 단추까지 덮는다 → 정리하고 완료 창을 띄운다
+    cleanScreen();
     S.done[m.id] = now();
     if (S.self === m.id) S.self = null;
     saveS();
@@ -8847,6 +8930,29 @@ applyDashboardMode();
     renderCoach(m, st);
   }
 
+  // 화면 밖이거나, 스크롤 칸(마법사 내용 등) 밖으로 걸쳐 아래 단추 줄에 가리면 굴려 보여 줘야 한다
+  function offView(el) {
+    const r = el.getBoundingClientRect();
+    if (r.top < 56 || r.bottom > innerHeight - 8) return true;
+    for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+      if (/(auto|scroll)/.test(getComputedStyle(p).overflowY) && p.scrollHeight > p.clientHeight) {
+        const q = p.getBoundingClientRect();
+        if (r.top < q.top - 1 || r.bottom > q.bottom + 1) return true;
+      }
+    }
+    return false;
+  }
+  // 옆으로 밀리는 칸(여러 사용자 표 등)이 밀려 있어 누를 곳의 왼쪽이 잘리면 왼쪽 끝을 맞춘다
+  function revealX(el) {
+    for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+      if (p.scrollWidth > p.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(p).overflowX)) {
+        const r = el.getBoundingClientRect(), q = p.getBoundingClientRect();
+        if (r.left < q.left - 1 || r.left > q.right - 40) p.scrollLeft += r.left - q.left;
+      }
+    }
+  }
+  const overlap = (a, b) => !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+
   function renderCoach(m, st) {
     const el = st.ext ? null : resolve(st.sel);
     $('#cbMis').textContent = `미션 ${m.no} · ${m.n}`;
@@ -8866,8 +8972,8 @@ applyDashboardMode();
     // 테두리
     if (el) {
       if (C.scrolled !== st.i) {
-        const r = el.getBoundingClientRect();
-        if (r.top < 56 || r.bottom > innerHeight - 8) el.scrollIntoView({ block: 'center' });
+        if (offView(el)) el.scrollIntoView({ block: 'center' });
+        revealX(el);
         C.scrolled = st.i;
       }
       const r = el.getBoundingClientRect();
@@ -8877,6 +8983,9 @@ applyDashboardMode();
       ring.style.width = `${r.width + pad * 2}px`;
       ring.style.height = `${r.height + pad * 2}px`;
       ring.hidden = false;
+      // 짧은 안내(토스트)가 누를 곳을 덮으면 치운다 — 할 일은 안내 띠에 있다
+      const tst = $('#simToast');
+      if (tst && !tst.hidden && overlap(tst.getBoundingClientRect(), ring.getBoundingClientRect())) tst.hidden = true;
       // 띠가 테두리를 가리지 않게 위/아래 고르기
       const bh = band.offsetHeight + 24;
       const atTop = r.bottom > innerHeight - bh && r.top > bh + 56;
@@ -8959,6 +9068,33 @@ applyDashboardMode();
       return { active: true, id: C.id, i: C.i, n: m.steps.length, t: st && st.t, ext: st && st.ext, ack: !!(st && st.ack) };
     },
     coachStepOnce: stepOnce,
+    // 사람처럼 누르는 검사용(tools/human.mjs): 지금 누를 곳(확인 단계는 「확인했어요」)의 화면 좌표와 가려졌는지
+    coachTargetInfo: () => {
+      if (!C) return { active: false };
+      const m = byId(C.id);
+      const st = m.steps[C.i];
+      if (!st) return { active: true, id: C.id, i: C.i, n: m.steps.length, none: true };
+      const a = st.auto;
+      const base = {
+        active: true, id: C.id, i: C.i, n: m.steps.length, t: st.t, ext: st.ext || null, ack: st.ack || null,
+        auto: typeof a === 'function' ? 'fn' : a ? { type: typeof a.type === 'function' ? a.type() : a.type, check: a.check } : null,
+        fail: $('#cbFail').hidden ? '' : $('#cbFail').textContent,
+      };
+      const el = st.ack ? $('#cbAck') : st.ext ? null : resolve(st.sel);
+      if (!el) return Object.assign(base, { none: true });
+      const r = el.getBoundingClientRect();
+      const x = Math.round(r.left + Math.min(r.width / 2, 60)), y = Math.round(r.top + Math.min(r.height / 2, 18));
+      const hit = document.elementFromPoint(x, y);
+      const ok = !!hit && (el.contains(hit) || (!!hit.closest('label') && hit.closest('label').contains(el)));
+      const desc = (e) => (e ? `${e.id ? '#' + e.id : ''}${typeof e.className === 'string' && e.className.trim() ? '.' + e.className.trim().split(/\s+/).slice(0, 2).join('.') : ''}${e.id || e.className ? '' : e.tagName} ${(e.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 24)}` : 'null');
+      const top = (e) => e && (e.closest('.coach-band, .mission-panel, .sim-dlg-root, .sim-toast, .self-bar, .wizard-overlay, .side-panel, .header, .sidebar') || e);
+      const inp = el.matches('input,select,textarea') ? el : null;
+      const kind = !inp && el.querySelector('input.grid-input') ? 'row' : inp && inp.type === 'checkbox' ? 'checkbox' : inp && inp.type !== 'file' ? 'input' : 'click';
+      return Object.assign(base, {
+        x, y, kind, target: desc(el), inView: x >= 0 && y >= 0 && x < innerWidth && y < innerHeight,
+        covered: !ok, cover: ok ? null : `${desc(top(hit))} ← ${desc(hit)}`,
+      });
+    },
     setNoDownload: (b) => (NO_DL = !!b),
     sigs,
     async runAll() {
