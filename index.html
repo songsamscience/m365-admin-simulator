@@ -2615,7 +2615,7 @@ button.dash-sec:hover { background: rgba(0,0,0,.04); }
 
 /* 혼자 해보기 띠 */
 .self-bar {
-  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2147482900;
+  position: fixed; left: 50%; top: 4px; transform: translateX(-50%); z-index: 2147482900;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   max-width: calc(100vw - 32px); padding: 8px 10px 8px 14px; border-radius: 10px;
   background: #1b1b1f; color: #fff; font-size: 13px; box-shadow: 0 10px 30px rgba(0,0,0,.3);
@@ -8810,7 +8810,7 @@ applyDashboardMode();
     // 쓰던 창(세부 정보 등)이 남아 있으면 왼쪽 아래 「실습 미션」 단추까지 덮는다 → 정리하고 완료 창을 띄운다
     cleanScreen();
     S.done[m.id] = now();
-    if (S.self === m.id) S.self = null;
+    if (S.self === m.id) { S.self = null; selfBar.hidden = true; }
     saveS();
     renderPanel();
     const next = MISSIONS[m.idx + 1];
