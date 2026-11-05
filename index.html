@@ -2615,11 +2615,12 @@ button.dash-sec:hover { background: rgba(0,0,0,.04); }
 
 /* 혼자 해보기 띠 */
 .self-bar {
-  position: fixed; left: 50%; top: 4px; transform: translateX(-50%); z-index: 2147482900;
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2147482900;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   max-width: calc(100vw - 32px); padding: 8px 10px 8px 14px; border-radius: 10px;
   background: #1b1b1f; color: #fff; font-size: 13px; box-shadow: 0 10px 30px rgba(0,0,0,.3);
 }
+.self-bar.at-top { bottom: auto; top: 4px; } /* 창이 열려 있으면 아래 단추(「다음」 등)를 가리지 않게 머리 막대 위로 */
 .sb-tag { background: #ffd335; color: #1b1b1f; font-weight: 700; border-radius: 999px; padding: 1px 9px; font-size: 12px; }
 .sb-name { font-weight: 600; }
 .sb-why { color: #ffb4a8; font-weight: 600; }
@@ -8873,6 +8874,7 @@ applyDashboardMode();
     const why = m.why(S.selfT0);
     selfBar.innerHTML = `<span class="sb-tag">혼자 해보기 · 미션 ${m.no}</span><span class="sb-name">${esc(m.n)}</span>${why ? `<span class="sb-why">${esc(why)}</span>` : ''}
       <button type="button" class="cb-btn" data-coach-switch>따라하기로 바꾸기</button><button type="button" class="cb-btn cb-ghost" data-self-stop>그만</button>`;
+    selfBar.classList.toggle('at-top', !noOverlay() || pageIs('addteam'));
     selfBar.hidden = false;
   }
   selfBar.addEventListener('click', (e) => {
